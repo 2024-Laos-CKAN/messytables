@@ -1,5 +1,5 @@
 from messytables import (ZIPTableSet, CSVTableSet, XLSTableSet,
-                         HTMLTableSet, ODSTableSet)
+                         XLSXTableSet, HTMLTableSet, ODSTableSet)
 import messytables
 import re
 
@@ -17,8 +17,8 @@ MIMELOOKUP = {'application/x-zip-compressed': 'ZIP',
               'application/vnd.ms-excel': 'XLS',
               'application/octet-stream': 'XLS', # libmagic detects sw_gen as this on mac
                                                  # with text "Microsoft OOXML"
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLS',
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheetapplication/zip': 'XLS',
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheetapplication/zip': 'XLSX',
               'text/html': 'HTML',
               'application/xml': 'HTML', # XHTML is often served as application-xml
               'text/plain': 'CSV',  # could be TAB.
@@ -35,6 +35,7 @@ def TABTableSet(fileobj):
 parsers = {'TAB': TABTableSet,
            'ZIP': ZIPTableSet,
            'XLS': XLSTableSet,
+           'XLSX': XLSXTableSet,
            'HTML': HTMLTableSet,
            'CSV': CSVTableSet,
            'ODS': ODSTableSet}
@@ -94,16 +95,16 @@ def guess_ext(ext):
               'csv': 'CSV',
               'tsv': 'TAB',
               'xls': 'XLS',
-              'xlsx': 'XLS',
+              'xlsx': 'XLSX',
               'htm': 'HTML',
               'html': 'HTML',
               'xlt': 'XLS',
                 # obscure Excel extensions taken from
                 # http://en.wikipedia.org/wiki/List_of_Microsoft_Office_filename_extensions
               'xlm': 'XLS',
-              'xlsm': 'XLS',
-              'xltx': 'XLS',
-              'xltm': 'XLS',
+              'xlsm': 'XLSX',
+              'xltx': 'XLSX',
+              'xltm': 'XLSX',
               'ods': 'ODS'}
     if ext in lookup:
         return lookup.get(ext, None)

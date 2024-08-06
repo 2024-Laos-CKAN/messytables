@@ -47,7 +47,8 @@ setup(
         'requests',
         'six>=1.9', # until messytables->html5lib releases https://github.com/html5lib/html5lib-python/pull/301
         'html5lib',
-        'json-table-schema>=0.2, <=0.2.1'
+        'json-table-schema>=0.2, <=0.2.1',
+        'openpyxl'
     ],
     tests_require=[],
     entry_points=\

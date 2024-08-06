@@ -446,21 +446,7 @@ def cast_row_set_to_rows(row_set):
     return rows
 
 
-class XlsxBackwardsCompatibilityTest(unittest.TestCase):
-    def test_that_xlsx_is_handled_by_xls_table_set(self):
-        """
-        Should emit a DeprecationWarning.
-        """
-        fh = horror_fobj('simple.xlsx')
-        assert_is_instance(XLSXTableSet(fh), XLSTableSet)
-
-
 class ReadXlsTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.large_xlsx_table_set = XLSTableSet(   # TODO
-            horror_fobj('large.xlsx'))
-
     def test_read_simple_xls(self):
         fh = horror_fobj('simple.xls')
         table_set = XLSTableSet(fh)
@@ -512,9 +498,32 @@ class ReadXlsTest(unittest.TestCase):
         data = list(row_set)
         assert_equal(int(data[0][1].value), 1)
 
+    def test_read_type_know_simple(self):
+        fh = horror_fobj('simple.xls')
+        table_set = XLSTableSet(fh)
+        row_set = table_set.tables[0]
+        row = list(row_set.sample)[1]
+        types = [c.type for c in row]
+        assert_equal(types, [DateType(None), FloatType(), StringType()])
+
+    def test_bad_first_sheet(self):
+        # First sheet appears to have no cells
+        fh = horror_fobj('problematic_first_sheet.xls')
+        table_set = XLSTableSet(fh)
+        tables = table_set.tables
+        assert_equal(0, len(list(tables[0].sample)))
+        assert_equal(1000, len(list(tables[1].sample)))
+
+
+class ReadXlsxTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.large_xlsx_table_set = XLSXTableSet(  # TODO
+            horror_fobj('large.xlsx'))
+
     def test_read_simple_xlsx(self):
         fh = horror_fobj('simple.xlsx')
-        table_set = XLSTableSet(fh)
+        table_set = XLSXTableSet(fh)
         assert_equal(1, len(table_set.tables))
         row_set = table_set.tables[0]
         first_row = list(row_set.sample)[0]
@@ -568,22 +577,6 @@ class ReadXlsTest(unittest.TestCase):
         assert_equal(12, num_rows)
         num_cells = sum(len(row) for row in table)
         assert_equal(num_rows * num_cols, num_cells)
-
-    def test_read_type_know_simple(self):
-        fh = horror_fobj('simple.xls')
-        table_set = XLSTableSet(fh)
-        row_set = table_set.tables[0]
-        row = list(row_set.sample)[1]
-        types = [c.type for c in row]
-        assert_equal(types, [DateType(None), FloatType(), StringType()])
-
-    def test_bad_first_sheet(self):
-        # First sheet appears to have no cells
-        fh = horror_fobj('problematic_first_sheet.xls')
-        table_set = XLSTableSet(fh)
-        tables = table_set.tables
-        assert_equal(0, len(list(tables[0].sample)))
-        assert_equal(1000, len(list(tables[1].sample)))
 
 
 class ReadHtmlTest(unittest.TestCase):

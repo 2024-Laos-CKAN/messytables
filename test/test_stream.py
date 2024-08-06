@@ -8,7 +8,7 @@ from . import horror_fobj
 from nose.tools import assert_equal
 import httpretty
 
-from messytables import CSVTableSet, XLSTableSet
+from messytables import CSVTableSet, XLSTableSet, XLSXTableSet
 
 class StreamInputTest(unittest.TestCase):
     @httpretty.activate
@@ -73,7 +73,7 @@ class StreamInputTest(unittest.TestCase):
             body=horror_fobj('simple.xlsx').read(),
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         fh = urlopen(url)
-        table_set = XLSTableSet(fh)
+        table_set = XLSXTableSet(fh)
         row_set = table_set.tables[0]
         data = list(row_set)
         assert_equal(7, len(data))
